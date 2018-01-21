@@ -41,7 +41,7 @@ class Shell:
 
 """Test Shell on normal test data and classifiers"""
 iris = datasets.load_iris()
-classifier = KNNClassifier(k=5)
+classifier = KNNClassifier(k=3)
 
 shell = Shell(iris.data, iris.target, classifier)
 shell.fit_model_to_shell()
@@ -53,7 +53,7 @@ for x in range(len(shell.y_test)):
 		correct += 1
 accuracy = (correct / float(len(shell.y_test))) * 100.0
 
-print(accuracy)
+print(f"The model is {round(accuracy)}% correct")
 
 
 
