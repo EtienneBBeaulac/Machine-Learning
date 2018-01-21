@@ -1,0 +1,56 @@
+import numpy as np
+from sklearn import datasets
+
+
+class KNNModel:
+    def __init__(self, distances, data_train, data_test): # I think classes are a combination of the train data and train targets
+        self.distances = distances
+        self.data_train = data_train
+        self.data_test = data_test
+
+    def predict(self, x_test):
+        pass
+
+
+class KNNClassifier:
+    def __init__(self, k):
+        self.k = k
+
+    def compute_distances(self, data, test_row):
+        return [ np.sum(self.get_squared_diff(row, test_row)) for row in data]
+
+    def get_squared_diff(self, x1, x2):
+        print(x1)
+        print(x2)
+        return [ (x1_point - x2_point)**2 for x1_point, x2_point in zip(x1, x2) ]
+
+    def get_sorted_distances(self, data_train, data_test):
+        for row in data_train:
+            distances = self.compute_distances(data_test, row)
+            indexed_dist = [ (i, distance) for i, distance in enumerate(distances) ]
+
+        return sort(indexed_dist)
+
+
+    def fit(self, data_train, targets_train, data_test):
+        # print(data_train)
+        # print(targets_train)
+
+
+        distances = self.get_sorted_distances(data_train, data_test)
+
+        return KNNModel(distances, data_train, data_test)
+
+
+# iris = datasets.load_iris()
+# classifier = KNNClassifier(k=3)
+# model = classifier.fit()
+
+
+# distances = compute_distance(rows, test_point=[3.2, 10.8, 1.0])
+# print(distances.sort())
+# print(distances)
+
+# indecies = np.argsort(distances)
+# my_dict = zip(indices, distances)
+# print(*my_dict)
