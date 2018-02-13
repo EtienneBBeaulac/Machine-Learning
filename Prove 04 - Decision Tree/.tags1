@@ -1,0 +1,21 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+np	/Users/etiennebeaulac/Documents/Classes/Winter 2018/CS 450/Machine-Learning-and-Visualization/Prove 04 - Decision Tree/ID3DecisionTree.py	/^import numpy as np$/;"	namespace	line:1
+pd	/Users/etiennebeaulac/Documents/Classes/Winter 2018/CS 450/Machine-Learning-and-Visualization/Prove 04 - Decision Tree/ID3DecisionTree.py	/^import pandas as pd$/;"	namespace	line:2
+preprocessing	/Users/etiennebeaulac/Documents/Classes/Winter 2018/CS 450/Machine-Learning-and-Visualization/Prove 04 - Decision Tree/ID3DecisionTree.py	/^from sklearn import preprocessing$/;"	namespace	line:3
+pprint	/Users/etiennebeaulac/Documents/Classes/Winter 2018/CS 450/Machine-Learning-and-Visualization/Prove 04 - Decision Tree/ID3DecisionTree.py	/^import pprint$/;"	namespace	line:4
+ID3Model	/Users/etiennebeaulac/Documents/Classes/Winter 2018/CS 450/Machine-Learning-and-Visualization/Prove 04 - Decision Tree/ID3DecisionTree.py	/^class ID3Model:$/;"	class	line:7
+__init__	/Users/etiennebeaulac/Documents/Classes/Winter 2018/CS 450/Machine-Learning-and-Visualization/Prove 04 - Decision Tree/ID3DecisionTree.py	/^    def __init__(self, data_train, targets_train):$/;"	member	line:8	class:ID3Model
+show_tree	/Users/etiennebeaulac/Documents/Classes/Winter 2018/CS 450/Machine-Learning-and-Visualization/Prove 04 - Decision Tree/ID3DecisionTree.py	/^    def show_tree(self):$/;"	member	line:24	class:ID3Model
+create_tree	/Users/etiennebeaulac/Documents/Classes/Winter 2018/CS 450/Machine-Learning-and-Visualization/Prove 04 - Decision Tree/ID3DecisionTree.py	/^    def create_tree(self, df, features):$/;"	member	line:29	class:ID3Model
+calc_info_gain	/Users/etiennebeaulac/Documents/Classes/Winter 2018/CS 450/Machine-Learning-and-Visualization/Prove 04 - Decision Tree/ID3DecisionTree.py	/^    def calc_info_gain(self, feature, df):$/;"	member	line:87	class:ID3Model
+calc_entropy	/Users/etiennebeaulac/Documents/Classes/Winter 2018/CS 450/Machine-Learning-and-Visualization/Prove 04 - Decision Tree/ID3DecisionTree.py	/^    def calc_entropy(self, p):$/;"	member	line:125	class:ID3Model
+get_leaf	/Users/etiennebeaulac/Documents/Classes/Winter 2018/CS 450/Machine-Learning-and-Visualization/Prove 04 - Decision Tree/ID3DecisionTree.py	/^    def get_leaf(self, node, data=pd.DataFrame):$/;"	member	line:135	class:ID3Model
+predict	/Users/etiennebeaulac/Documents/Classes/Winter 2018/CS 450/Machine-Learning-and-Visualization/Prove 04 - Decision Tree/ID3DecisionTree.py	/^    def predict(self, test_data):$/;"	member	line:145	class:ID3Model
+ID3DecisionTree	/Users/etiennebeaulac/Documents/Classes/Winter 2018/CS 450/Machine-Learning-and-Visualization/Prove 04 - Decision Tree/ID3DecisionTree.py	/^class ID3DecisionTree:$/;"	class	line:151
+__init__	/Users/etiennebeaulac/Documents/Classes/Winter 2018/CS 450/Machine-Learning-and-Visualization/Prove 04 - Decision Tree/ID3DecisionTree.py	/^    def __init__(self):$/;"	member	line:152	class:ID3DecisionTree
+fit	/Users/etiennebeaulac/Documents/Classes/Winter 2018/CS 450/Machine-Learning-and-Visualization/Prove 04 - Decision Tree/ID3DecisionTree.py	/^    def fit(self, data_train, targets_train):$/;"	member	line:155	class:ID3DecisionTree
