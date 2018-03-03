@@ -9,7 +9,6 @@ class NeuralNetModel:
         self.layers = layers
         self.new_targets = new_targets
         self.classifications = []
-        pass
 
     def predict(self, test_data):
         self.inputs = test_data
@@ -21,7 +20,6 @@ class NeuralNetModel:
         for index, row in self.inputs.iterrows():
             # Go through each layer
             for x in range(len(self.layers)):
-                # print(f"-------------Layer #{x} for row #{index} PREDICT---------------")
                 # This is for input layer
                 if x == 0:
                     self.layers[x].inputs = row
@@ -31,8 +29,6 @@ class NeuralNetModel:
                     self.layers[x].calc_neurons_forward()
                 # Show output
                 if self.layers[x].is_output:
-                    # self.layers[x].show_output()
-                    # print(self.classify())
                     self.classifications.append([self.classify()])
 
     def classify(self):
@@ -42,7 +38,7 @@ class NeuralNetModel:
             return -1
 
 class NeuralNetClassifier:
-    def __init__(self, hidden_layers_info=None, bias_value=-1, learn_rate=0.1, epochs=50):
+    def __init__(self, hidden_layers_info=None, bias_value=-1, learn_rate=0.1, epochs=100):
         self.hidden_layers_info = hidden_layers_info
         self.bias_value = bias_value
         self.learn_rate = learn_rate
@@ -63,68 +59,80 @@ class NeuralNetClassifier:
                               for target in self.targets['targets'].unique().tolist()}
         self.new_targets_v = {target:self.generate_target(target)
                               for target in self.targets['targets'].unique().tolist()}
-        self.layers = [NeuralLayer(num_inputs=self.num_inputs, num_neurons=self.hidden_layers_info[layer_id]) if layer_id == 0
-                       else NeuralLayer(num_inputs=self.hidden_layers_info[layer_id - 1], num_neurons=self.hidden_layers_info[layer_id], is_output=True)
+
+        # create the layers, their nodes, and their weights
+        self.layers = [NeuralLayer(num_inputs=self.num_inputs,
+                                   num_neurons=self.hidden_layers_info[layer_id],
+                                   bias_value=self.bias_value) if layer_id == 0
+                       else NeuralLayer(num_inputs=self.hidden_layers_info[layer_id - 1],
+                                        num_neurons=self.hidden_layers_info[layer_id],
+                                        bias_value=self.bias_value)
                        for layer_id in range(len(self.hidden_layers_info))]
-        # Go through each row in the dataset
-        for index, row in self.inputs.iterrows():
-            self.forward(index, row)
-            self.backward(index, row)
-        print(f"{self.layers[-1].nodes[0].weights}")
+
+        # print(self.targets.values.tolist())
+        self.accuracies = []
+        # loop through epochs
+        for epoch in range(self.epochs):
+            classifications = []
+            # Go through each row in the dataset
+            for index, row in self.inputs.iterrows():
+                self.forward(index, row, classifications)
+                self.backward(index, row)
+            print(f"Epoch #{epoch}: {self.get_accuracy(self.targets, classifications)}%")
+            self.accuracies.append(self.get_accuracy(self.targets, classifications))
         return NeuralNetModel(self.layers, self.new_targets_k)
 
-    def forward(self, index, row):
-        # self.layers = []
+    def forward(self, index, row, classifications):
         # Go through each layer
         for x in range(len(self.hidden_layers_info)):
-            print(f"-------------Layer #{x} for row #{index}---------------")
             # Check if we're at the output layer
             is_output = x == len(self.hidden_layers_info) - 1
             # This is for input layer
             if x == 0:
-                # self.layers.append(NeuralLayer(
-                #     row,
-                #     self.new_targets_v[self.targets.loc[index].values[0]],
-                #     self.hidden_layers_info[x],
-                #     is_output)
-                # )
                 self.layers[x].set(inputs=row,
-                                   target=self.new_targets_v[self.targets.loc[index].values[0]])
+                                   target=self.new_targets_v[self.targets.loc[index].values[0]],
+                                   is_output=is_output)
                 self.layers[x].calc_neurons_forward()
             # Other layers
             else:
-                # self.layers.append(NeuralLayer(
-                #     self.layers[x - 1].new_inputs,
-                #     self.new_targets_v[self.targets.loc[index].values[0]],
-                #     self.hidden_layers_info[x], is_output)
-                # )
                 self.layers[x].set(inputs=self.layers[x - 1].new_inputs,
-                                   target=self.new_targets_v[self.targets.loc[index].values[0]])
+                                   target=self.new_targets_v[self.targets.loc[index].values[0]],
+                                   is_output=is_output)
                 self.layers[x].calc_neurons_forward()
-            # Show output
+            # Add output to our list
             if is_output:
-                self.layers[x].show_output()
-                self.classifications.append(self.classify())
+                classifications.append(self.classify())
 
     def backward(self, index, row):
+        # go backward
         for x in reversed(range(len(self.layers))):
-            print(f"Layer #{x}")
-            print( "----------------------------")
+            # if we're in the output layer calculate error from output
             if x == len(self.layers) - 1:
-                print("Output error")
                 self.layers[x].error()
+            # if we're in a hidden layer calculate error from right layer
             else:
-                print("Hidden error")
                 self.layers[x].error(self.layers[x + 1])
+
+        # update the weights according to learning rate
+        for x in reversed(range(len(self.layers))):
             self.layers[x].update_weights(self.learn_rate)
 
     def classify(self):
         if tuple(self.layers[-1].norm_output()) in self.new_targets_k:
-            return self.new_targets_k[tuple(self.layers[-1].norm_output())]
+            return [self.new_targets_k[tuple(self.layers[-1].norm_output())]]
         else:
-            return -1
+            return [-1]
 
     def generate_target(self, target):
+        # converts a normal target into a neural network target
         temp = [0] * self.num_outputs
         temp[target] = 1
         return tuple(temp)
+
+    def get_accuracy(self, targets, predicted):
+        correct = 0
+        for x in range(len(targets)):
+            if targets.values.tolist()[x] == predicted[x]:
+                correct += 1
+        accuracy = (correct / float(len(targets))) * 100.0
+        return round(accuracy, 1)

@@ -120,7 +120,7 @@ iris_data = pd.DataFrame(iris['data'],
 # for feature in iris_data.columns:
 #     iris_data[feature] = pd.cut(iris_data[feature], bins = 3).astype(str).apply(str)
 
-iris_shell = Shell(iris_data, pd.DataFrame(iris['target'], columns=['targets']), NeuralNetClassifier(hidden_layers_info=[2]))
+iris_shell = Shell(iris_data, pd.DataFrame(iris['target'], columns=['targets']), NeuralNetClassifier(hidden_layers_info=[5,4], learn_rate=0.2, epochs=175))
 iris_shell.fit_model_to_shell()
 # iris_shell.model.show_tree()
 iris_shell.predict_from_classifier()
