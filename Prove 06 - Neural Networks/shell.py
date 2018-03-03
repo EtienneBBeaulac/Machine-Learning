@@ -79,6 +79,7 @@ class Shell:
     def get_accuracy(self, _range=0):
         correct = 0
         for x in range(len(self.y_test)):
+            # print(f"Target: {self.y_test.values.tolist()[x]} ---- > {self.y_predicted[x]}")
             if self.y_test.values.tolist()[x] == self.y_predicted[x]:
                 correct += 1
         accuracy = (correct / float(len(self.y_test))) * 100.0
@@ -119,10 +120,11 @@ iris_data = pd.DataFrame(iris['data'],
 # for feature in iris_data.columns:
 #     iris_data[feature] = pd.cut(iris_data[feature], bins = 3).astype(str).apply(str)
 
-iris_shell = Shell(iris_data, pd.DataFrame(iris['target'], columns=['targets']), NeuralNetClassifier(num_layers=3))
+iris_shell = Shell(iris_data, pd.DataFrame(iris['target'], columns=['targets']), NeuralNetClassifier(hidden_layers_info=[2]))
 iris_shell.fit_model_to_shell()
 # iris_shell.model.show_tree()
 iris_shell.predict_from_classifier()
+print(f"Accuracy: {iris_shell.get_accuracy()}%")
 # print(f"Custom iris tree accuracy: {iris_shell.get_accuracy()}%")
 
 # df = iris_data.apply(preprocessing.LabelEncoder().fit_transform)
