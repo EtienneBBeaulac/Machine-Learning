@@ -1,5 +1,7 @@
 from sklearn.model_selection import train_test_split
 from NeuralNetwork import NeuralNetClassifier
+from sklearn.neural_network import MLPClassifier
+from wrangler import Wrangler
 from sklearn import preprocessing
 from sklearn.utils import shuffle
 from operator import itemgetter
@@ -14,7 +16,7 @@ class Shell:
         elif filename[:3] == 'csv':
             self.data = pd.read_csv(filename)
         elif filename[:3] == 'txt':
-            self.data = pd.DateFrame(filename)
+            self.data = pd.DataFrame(filename)
         else:
             print("Data Invalid")
 
@@ -85,50 +87,92 @@ class Shell:
         accuracy = (correct / float(len(self.y_test))) * 100.0
         return round(accuracy, 1)
 
+# iris = datasets.load_iris()
+# iris_data = pd.DataFrame(iris['data'],
+#                      columns=iris['feature_names'])
+# iris_shell = Shell(iris_data, pd.DataFrame(iris['target'],
+#                                            columns=['targets']),
+#                                            NeuralNetClassifier(hidden_layers_info=[5,4],
+#                                            learn_rate=0.2,
+#                                            epochs=200,
+#                                            thres_function='sigmoid'))
+# iris_shell.fit_model_to_shell()
+# iris_shell.predict_from_classifier()
+# print(f"Accuracy: {iris_shell.get_accuracy()}%")
 
 
-# col_names = [ "targets", "handi-inf", "water",
-#               "adop-budg-res",
-#               "physi", "aid", "religion",
-#               "anti-sat-ban", "nicaraguan", "missile", "immig",
-#               "synfuels", "edu-spend", "superfund-sue",
-#               "crime", "exports", "s-afri" ]
-# df = pd.read_csv("data/house-votes-84.data", names=col_names).replace("?", value="meh")
-# targets = df["targets"]
-# df = df.drop(["targets"], axis=1)
-#
-# votes_shell = Shell(df, targets, ID3DecisionTree())
-#
-# votes_shell.fit_model_to_shell()
-# votes_shell.model.show_tree()
-# votes_shell.predict_from_classifier()
-# print(f"Custom votes tree accuracy: {votes_shell.get_accuracy()}%")
-#
-#
-# df = df.apply(preprocessing.LabelEncoder().fit_transform)
-#
-# classifier = tree.DecisionTreeClassifier()
-# new_votes_shell = Shell(df, targets, classifier)
-# new_votes_shell.fit_model_to_shell()
-# new_votes_shell.predict_from_classifier()
-# print(f"sklearn votes tree accuracy: {new_votes_shell.get_accuracy()}%")
 
-iris = datasets.load_iris()
-iris_data = pd.DataFrame(iris['data'],
-                     columns=iris['feature_names'])
+w = Wrangler()
 
-# for feature in iris_data.columns:
-#     iris_data[feature] = pd.cut(iris_data[feature], bins = 3).astype(str).apply(str)
+""" our implementation of iris """
+iris_shell = Shell(w.iris.data,
+                   w.iris.targets,
+                   NeuralNetClassifier(hidden_layers_info=[5,4],
+                                       learn_rate=0.2,
+                                       epochs=200,
+                                       thres_function='sigmoid')
+                  )
 
-iris_shell = Shell(iris_data, pd.DataFrame(iris['target'], columns=['targets']), NeuralNetClassifier(hidden_layers_info=[5,4], learn_rate=0.2, epochs=175))
 iris_shell.fit_model_to_shell()
-# iris_shell.model.show_tree()
 iris_shell.predict_from_classifier()
 print(f"Accuracy: {iris_shell.get_accuracy()}%")
-# print(f"Custom iris tree accuracy: {iris_shell.get_accuracy()}%")
 
-# df = iris_data.apply(preprocessing.LabelEncoder().fit_transform)
-# new_iris_shell = Shell(df, pd.DataFrame(iris['target'], columns=['targets']), tree.DecisionTreeClassifier())
-# new_iris_shell.fit_model_to_shell()
-# new_iris_shell.predict_from_classifier()
-# print(f"sklearn iris tree accuracy: {new_iris_shell.get_accuracy()}%")
+""" our implementation of diabetes """
+# pima_shell = Shell(w.diabetes.data,
+#                    w.diabetes.targets,
+#                    NeuralNetClassifier(hidden_layers_info=[5,4],
+#                    learn_rate=0.2,
+#                    epochs=100,
+#                    thres_function='sigmoid'))
+#
+# pima_shell.fit_model_to_shell()
+# pima_shell.predict_from_classifier()
+# print(f"Accuracy: {pima_shell.get_accuracy()}%")
+
+""" our implementation of car """
+# car_shell = Shell(w.car.data,
+#                    w.car.targets,
+#                    NeuralNetClassifier(hidden_layers_info=[5,4],
+#                    learn_rate=0.2,
+#                    epochs=100,
+#                    thres_function='sigmoid'))
+#
+# car_shell.fit_model_to_shell()
+# car_shell.predict_from_classifier()
+# print(f"Accuracy: {car_shell.get_accuracy()}%")
+
+""" existing implementation of car """
+# car_clf = MLPClassifier(activation='logistic',
+#                              hidden_layer_sizes=(5,))
+#
+# x_train, x_test, y_train, y_test = train_test_split(w.car.data,
+#                                                     w.car.targets,
+#                                                     test_size=0.7,
+#                                                     train_size=0.3)
+#
+# car_clf.fit(x_train, y_train)
+# print(car_clf.score(x_test, y_test))
+
+""" existing implementation of diabetes """
+# diabetes_clf = MLPClassifier(activation='logistic',
+#                              hidden_layer_sizes=(5,))
+#
+# x_train, x_test, y_train, y_test = train_test_split(w.diabetes.data,
+#                                                     w.diabetes.targets,
+#                                                     test_size=0.7,
+#                                                     train_size=0.3)
+#
+# diabetes_clf.fit(x_train, y_train)
+# print(diabetes_clf.score(x_test, y_test))
+
+""" existing implementation of iris """
+# iris_clf = MLPClassifier(activation='logistic',
+#                          hidden_layer_sizes=(5,))
+#
+# x_train, x_test, y_train, y_test = train_test_split(w.iris.data,
+#                                                     w.iris.targets,
+#                                                     test_size=0.7,
+#                                                     train_size=0.3)
+#
+# iris_clf.fit(x_train, y_train)
+# print(iris_clf.score(x_test, y_test))

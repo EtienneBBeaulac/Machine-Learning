@@ -1,3 +1,4 @@
+from sklearn import datasets
 import pandas as pd
 import numpy as np
 import os
@@ -6,9 +7,13 @@ import re
 
 class Dataset:
     """serves the purpose of abstracting out data and targets for use in kNN algorithm"""
-    def __init__(self, df):
-        self.targets = df["targets"]
-        self.data = df.drop(["targets"], axis=1)
+    def __init__(self, df, targets=None):
+        if targets is None:
+            self.targets = pd.DataFrame(df["targets"])
+            self.data = df.drop(["targets"], axis=1)
+        else:
+            self.targets = targets
+            self.data = df
 
 
 class Wrangler:
@@ -26,6 +31,16 @@ class Wrangler:
                 self.clean_diabetes_data("./data/" + f)
             elif f == "auto-mpg.data":
                 self.clean_mpg_data("./data/" + f)
+
+        self.clean_iris_data()
+
+    def clean_iris_data(self):
+        iris = datasets.load_iris()
+        iris_data = pd.DataFrame(iris['data'], columns=iris['feature_names'])
+        iris_targets = pd.DataFrame(iris['target'], columns=['targets'])
+
+        self.normalize(iris_data)
+        self.iris = Dataset(iris_data, iris_targets)
 
     def clean_car_data(self, filename):
         """CAR DATASET INFO
@@ -52,8 +67,12 @@ class Wrangler:
         data.replace(encoded_values, inplace=True)
         data["doors"] = [int(value) for value in data.doors.values]
         data["persons"] = [int(value) for value in data.persons.values]
+
+
+
         # use the Dataset object to separate about data and targets
-        self.car_data = Dataset(data)
+        self.car = Dataset(data)
+        self.normalize(self.car.data)
 
     def clean_diabetes_data(self, filename):
         """DIABETES DATASET INFO
@@ -77,7 +96,8 @@ class Wrangler:
         column_dict = { colname: { 0: mean } for mean, colname in zip(means, cols_with_zeros) }
         data = data.replace(column_dict)
 
-        self.diabetes_data = Dataset(data)
+        self.diabetes = Dataset(data)
+        self.normalize(self.diabetes.data)
 
     def clean_mpg_data(self, filename):
         """MPG DATASET INFO
@@ -94,7 +114,13 @@ class Wrangler:
 
         # for kNN, we don't need car_names
         data = data.drop(["car_name"], axis=1)
-        self.mpg_data = Dataset(data)
+
+        self.mpg = Dataset(data)
+        self.normalize(self.mpg.data)
+
+    def normalize(self, df):
+        """used on dataframe to normalize all data"""
+        df = (df - df.mean()) / df.std()
 
 
 w = Wrangler()

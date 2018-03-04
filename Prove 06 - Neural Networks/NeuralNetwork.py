@@ -1,4 +1,5 @@
 from NeuralLayer import NeuralLayer
+import matplotlib.pyplot as plt
 from sklearn import datasets
 from node import Node
 import pandas as pd
@@ -38,15 +39,22 @@ class NeuralNetModel:
             return -1
 
 class NeuralNetClassifier:
-    def __init__(self, hidden_layers_info=None, bias_value=-1, learn_rate=0.1, epochs=100):
+    def __init__(self, hidden_layers_info=None, bias_value=-1, learn_rate=0.1, epochs=100, thres_function='sigmoid'):
         self.hidden_layers_info = hidden_layers_info
         self.bias_value = bias_value
         self.learn_rate = learn_rate
         self.epochs = epochs
         self.classifications = []
+        thres_function_possibilities = ['sigmoid', 'tanh', 'softsign']
+        if thres_function in thres_function_possibilities:
+            self.thres_function = thres_function
+        else:
+            self.thres_function = 'sigmoid'
 
     def fit(self, data_train, targets_train):
         # Find some good values for number of layers and number of nodes at each layer
+        print(type(targets_train))
+        print(targets_train.nunique())
         self.num_outputs = targets_train.nunique()[0]
         self.num_inputs = len(data_train.columns)
         if self.hidden_layers_info is None:
@@ -63,10 +71,12 @@ class NeuralNetClassifier:
         # create the layers, their nodes, and their weights
         self.layers = [NeuralLayer(num_inputs=self.num_inputs,
                                    num_neurons=self.hidden_layers_info[layer_id],
-                                   bias_value=self.bias_value) if layer_id == 0
+                                   bias_value=self.bias_value,
+                                   thres_function=self.thres_function) if layer_id == 0
                        else NeuralLayer(num_inputs=self.hidden_layers_info[layer_id - 1],
                                         num_neurons=self.hidden_layers_info[layer_id],
-                                        bias_value=self.bias_value)
+                                        bias_value=self.bias_value,
+                                        thres_function=self.thres_function)
                        for layer_id in range(len(self.hidden_layers_info))]
 
         # print(self.targets.values.tolist())
@@ -80,6 +90,8 @@ class NeuralNetClassifier:
                 self.backward(index, row)
             print(f"Epoch #{epoch}: {self.get_accuracy(self.targets, classifications)}%")
             self.accuracies.append(self.get_accuracy(self.targets, classifications))
+        # Graph the learning
+        self.graph_accuracy_over_epochs()
         return NeuralNetModel(self.layers, self.new_targets_k)
 
     def forward(self, index, row, classifications):
@@ -121,12 +133,16 @@ class NeuralNetClassifier:
         if tuple(self.layers[-1].norm_output()) in self.new_targets_k:
             return [self.new_targets_k[tuple(self.layers[-1].norm_output())]]
         else:
-            return [-1]
+            return [-2]
 
     def generate_target(self, target):
         # converts a normal target into a neural network target
-        temp = [0] * self.num_outputs
-        temp[target] = 1
+        if self.thres_function == 'sigmoid':
+            temp = [0] * self.num_outputs
+            temp[target] = 1
+        elif self.thres_function == 'tanh' or self.thres_function == 'softsign':
+            temp = [-1] * self.num_outputs
+            temp[target] = 1
         return tuple(temp)
 
     def get_accuracy(self, targets, predicted):
@@ -136,3 +152,12 @@ class NeuralNetClassifier:
                 correct += 1
         accuracy = (correct / float(len(targets))) * 100.0
         return round(accuracy, 1)
+
+    def graph_accuracy_over_epochs(self):
+        plt.plot(self.accuracies)
+
+        plt.ylabel("Accuracy")
+        plt.xlabel("Epochs")
+        plt.title("Training Accuracy over Epochs")
+
+        plt.show()
