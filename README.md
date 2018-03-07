@@ -1,1 +1,1 @@
-# Machine-Learning-and-Visualization
+# Machine Learning and Data Mining
