@@ -1,0 +1,10 @@
+,0,1,2
+0,letter,knn,89.6
+1,letter,tree,80.8
+2,letter,network,50.2
+3,diabetes,knn,71.2
+4,diabetes,tree,68.0
+5,diabetes,network,69.3
+6,car,knn,90.5
+7,car,tree,93.0
+8,car,network,70.2
