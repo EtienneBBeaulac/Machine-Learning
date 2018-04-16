@@ -1,1 +1,2 @@
-# Machine Learning and Data Mining
+# Machine Learning
+Here is my repository of custom-made machine learning algorithms.
